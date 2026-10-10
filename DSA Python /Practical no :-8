@@ -1,0 +1,49 @@
+def fractional_knapsack(weights, profits, capacity):
+    n = len(weights)
+
+    # Calculate profit-to-weight ratio
+    ratio = []
+    for i in range(n):
+        ratio.append((profits[i] / weights[i], weights[i], profits[i]))
+
+    # Sort by ratio in descending order
+    ratio.sort(reverse=True)
+
+    total_profit = 0
+
+    print("\nSelected parcels:")
+
+    for r, weight, profit in ratio:
+        if capacity == 0:
+            break
+
+        if weight <= capacity:
+            # Take the complete parcel
+            capacity -= weight
+            total_profit += profit
+            print(f"Weight: {weight}, Profit: {profit} (Full parcel)")
+        else:
+            # Take a fraction of the parcel
+            fraction = capacity / weight
+            earned = profit * fraction
+            total_profit += earned
+
+            print(f"Weight: {capacity}, Profit: {earned:.2f} (Partial parcel)")
+            capacity = 0
+
+    print(f"\nMaximum Profit: {total_profit:.2f}")
+
+
+# Main program
+n = int(input("Enter number of parcels: "))
+
+weights = list(map(float, input("Enter parcel weights: ").split()))
+profits = list(map(float, input("Enter parcel profits: ").split()))
+capacity = float(input("Enter truck capacity: "))
+
+if n <= 0 or len(weights) != n or len(profits) != n:
+    print("Invalid input!")
+elif any(w <= 0 for w in weights) or any(p < 0 for p in profits) or capacity < 0:
+    print("Weights must be positive, profits and capacity must be non-negative.")
+else:
+    fractional_knapsack(weights, profits, capacity)
